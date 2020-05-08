@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="57x57" href="./res/icon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./res/icon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./res/icon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./res/icon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./res/icon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./res/icon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./res/icon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./res/icon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./res/icon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./res/icon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./res/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./res/icon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./res/icon/favicon-16x16.png">
+    <!-- <link rel="manifest" href="./res/icon/manifest.json"> -->
+    <meta name="msapplication-TileColor" content="#218C8D">
+    <meta name="msapplication-TileImage" content="./res/icon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#218C8D">
+    <link href="css/w3.css" rel="stylesheet" type="text/css" />
+    <link href="css/awesomplete.css" rel="stylesheet" type="text/css" />
+    <link href="css/star-rating-svg.css" rel="stylesheet" type="text/css" />
+    <link href="css/shaarli.css" rel="stylesheet" type="text/css" />
+    <link href="css/alerty.min.css" rel="stylesheet" type="text/css" />
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/taffy-min.js"></script>
+    <script src="js/jquery.tagcloud.js"></script>
+    <!-- <script src="js/hammer.min.js"></script> -->
+    <script src="js/awesomplete.min.js"></script>
+    <!-- <script src="js/jquery.hammer.js"></script> -->
+    <script src="js/filesaver.min.js"></script>
+    <script src="js/qrious.min.js"></script>
+    <script src="js/jquery.star-rating-svg.min.js"></script>
+    <script src="js/translate.js"></script>
+    <script src="js/alerty.min.js"></script>
+    <script src="js/sha512.js"></script>
+    <!-- <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script> -->
+    <script src="js/gapi.js" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+    <!-- <script async defer src="https://apis.google.com/js/api.js"></script> -->
+    <script src="js/shaarli.js"></script>
+    <script src="js/gdrive.js"></script>
+    <script src="js/index.js"></script>
+    
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="w3-sidebar w3-bar-block w3-border-right w3-animate-left" id="mySidebar">
+        <button class="w3-bar-item w3-large fs-black" id=btn_close>Close</button>
+        <a href="#" class="w3-bar-item w3-button" id="gosettingsbox">Settings</a>
+        <a href="#" class="w3-bar-item w3-button" id="godownloadbox">Download (menu)</a>
+        <a href="#" class="w3-bar-item w3-button" id="goremovebox">Remove (menu)</a>
+        <a href="#" class="w3-bar-item w3-button" id="goupdate">Update server</a>
+        <!-- <a href="#" class="w3-bar-item w3-button" id="gotest">Show test</a> -->
+        <a href="#" class="w3-bar-item w3-button" id="showtrash">Show trash</a>
+        <a href="#" class="w3-bar-item w3-button" id="reloadapp">Reload app</a>
+        <a href="#" class="w3-bar-item w3-button goabout" id="goabout"></a>
+    </div>
+
+    <!-- Overlay -->
+    <div class="w3-overlay w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" id="myOverlay"></div>
+    <div id="verticalbar"></div>
+
+    <header>
+        <form>
+            <span id="clearsearch" onclick="clearsearch()">x</span>
+            <input type="text" name="search" id="myFilter" onsearch="Select()">
+        </form>
+        <div class="basecolor">
+            <button class="w3-button w3-xlarge xclose" id="open-sidebar"">&#9776;</button>
+            <div class=" w3-container basecolor contheader">
+                <div id="titleapp" class="w3-cell-row title goabout">WebLinks <span id="syncing">
+                        <img class="syncing" src="res/img/syncing.gif" alt="Syncing" height="20" width="20"></span>
+                </div>
+        </div>
+        </div>
+        <!-- black menu bar -->
+        <div class="w3-black">
+            <div class="menubar w3-black">
+                <a href="#" class="w3-button menubar-item" id="getall">All</a>
+                <a href="#" class="w3-button menubar-item" id="privateselect">Scope</a>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4 privateselectmenu" id="privateselectelements">
+                    <a href="#" class="w3-bar-item w3-button queryprivate" id="privateselectall">All</a>
+                    <a href="#" class="w3-bar-item w3-button queryprivate" id="privateselectprivate">Private</a>
+                    <a href="#" class="w3-bar-item w3-button queryprivate" id="privateselectpublic">Public</a>
+                </div>
+                <a href="#" class="w3-button menubar-item" id="catselect">Category</a>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4 catselectmenu" id="catselectelements">
+                </div>
+                <a href="#" class="w3-button menubar-item" id="dueselect">Due</a>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4 dueselectmenu" id="dueselectelements">
+                    <a href="#" class="w3-bar-item w3-button querywhen" id="dueselectall">All</a>
+                    <a href="#" class="w3-bar-item w3-button querywhen" id="dueselecttoday">Today</a>
+                    <a href="#" class="w3-bar-item w3-button querywhen" id="dueselectweek">This week</a>
+                    <a href="#" class="w3-bar-item w3-button querywhen" id="dueselectmonth">This month</a>
+                    <a href="#" class="w3-bar-item w3-button querywhen" id="dueselectyear">This year</a>
+                </div>
+                <a href="#" class="w3-button menubar-item" id="gettagcloud">Tags</a>
+            </div>
+        </div>
+    </header>
+    <div id="box">
+        <div id="box0">
+            <!--list -->
+            <div id="box00">
+                <!--Central part-->
+                <div id="centralpart" class="w3-container">
+                    <table class="w3-table-all w3-margin-top" id="activelist">
+                        <!--weblinks list-->
+                    </table><br><br>
+                    <a href="#" id="listend">Show more</a>
+                </div>
+            </div>
+            <a href="#" class="scrollToTop w3-display-bottomright"></a>
+            <a href="#" id="addnewweblink" class="w3-display-bottomleft"></a>
+        </div>
+    </div>
+    <!-- <canvas id="qr"></canvas> -->
+    <!-- <div id="addnewweblink" class="newweblinkup">
+        <a class="w3-button w3-large w3-circle w3-xlarge w3-ripple basecolor" style="z-index:0">+</a>
+    </div> -->
+
+    <div id="qrcode-window" class="w3-modal">
+        <div class="qrcode-window">
+            <img id="qrious">
+        </div>
+    </div>
+
+
+    <!-- small yellow message box to show that weblink is saved (etc.) -->
+    <div id="alertmessage" class="w3-modal">
+        <div class="w3-modal-content alert fs-yellow">
+            <div class="w3-container">
+                <span>Some text in the Modal..</span>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup new/edit weblink-->
+    <div id="editweblink" class="w3-modal">
+        <div class="w3-modal-content w3-card-4">
+            <div class="w3-container fs-light-blue">
+                <span id="close-editweblink" class="w3-button w3-display-topright w3-xlarge xclose">&times;</span>
+                <h2 id="titleeditform"></h2>
+            </div>
+            <form method="post" class="w3-container" id="editweblinkform" autocomplete="off">
+                <input name="ipt-id" class="w3-input" type="hidden" id="ipt-id">
+                <input name="ipt-created" class="w3-input" type="hidden" id="ipt-created"></p>
+                <p>
+                    <label id="lbl-url"></label>
+                    <input name="ipt-url" class="w3-input" type="text" id="ipt-url"></p>
+                <p>
+                    <label id="lbl-title"></label><label style="color:red;">&nbsp;*</label>
+                    <input name="ipt-title" class="w3-input" type="text" id="ipt-title"></p>
+                <p>
+                    <label id="lbl-description"></label>
+                    <textarea name="ipt-description" class="w3-input" type="textarea" id="ipt-description"></textarea>
+                </p>
+                <p>
+                    <label id="lbl-tags"></label>
+                    <input name="ipt-tags" class="w3-input" type="text" id="ipt-tags" data-list="" data-multiple></p>
+                <p>
+                    <p>
+                        <label id="lbl-category"></label>
+                        <input name="ipt-category" class="w3-input awesomplete" type="search" id="ipt-category"
+                               data-list="">
+                    </p>
+                    <p></p>
+                    <div class="w3-cell-row" style="height:30px;">
+                        <label id="lbl-rating">Rating</label>
+                        <div id="ratingzero" class="w3-container w3-cell ratingzero">
+                        </div>
+                        <div class="w3-container w3-cell" style="width:120px; padding-left:0px">
+                            <div id="ipt-rating" title="Set rating to make favorite"></div>
+                        </div>
+                    </div>
+                </p>
+                <p>
+                    <input class="w3-check" type="checkbox" checked="checked" id="ipt-private">
+                    <label id="lbl-private"></label></p>
+                <p><br>
+                    <label id="lbl-created"></label>
+                    <label id="lbl-updated"></label>
+                </p>
+                <br>
+                <p>
+                    <div style="float:right;margin-bottom:15px;">
+                        <!-- <a href="#" class="w3-button fs-light-blue w3-ripple" id="btn-newweblink" ></a> -->
+                        <a href="#" class="w3-button fs-steel w3-ripple" id="btn-deleteweblink"></a>
+                        <a href="#" class="w3-button fs-light-blue w3-ripple" id="btn-saveweblink"></a>
+                        <a href="#" class="w3-button fs-steel w3-ripple" id="btn-cancelweblink"></a>
+                    </div>
+                </p>
+                <br><br>
+            </form>
+            <footer class="w3-container fs-teal">
+            </footer>
+        </div>
+    </div>
+
+    <!--Popup tag-cloud -->
+    <div id="tagcloud" class="w3-modal">
+        <div class="w3-modal-content w3-card-4">
+            <div class="w3-container fs-light-blue">
+                <span id="close-tagcloud" class="w3-button w3-display-topright w3-xlarge xclose">&times;</span>
+                <h2 id="titletagcloud">Tagcloud</h2>
+            </div>
+            <div class="w3-container tags-container">
+                <p>
+                    <div id="tagcloudtags"></div>
+                </p>
+                <div style="float:right">
+                    <!-- <a href="#" class="w3-button fs-light-blue w3-ripple" id="btn-newweblink" ></a> -->
+                    <a href="#" class="w3-button fs-steel w3-ripple" id="btn-canceltagcloud"></a>
+                </div>
+                <footer class="w3-container fs-teal">
+                </footer>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!--messagebox-->
+    <div id="messagebox" class="w3-modal">
+        <div class="w3-modal-content w3-card-4">
+            <div class="w3-container fs-light-blue">
+                <span id="closemessagebox" class="w3-button w3-display-topright w3-xlarge xclose">&times;</span>
+                <h2 id="messageboxheader"></h2>
+            </div><br />
+            <div class="w3-container" id="messageboxmessage">
+                <!--message-->
+            </div>
+            <!-- <div class="w3-container" id="messageboxlist"></div> -->
+            <form class="w3-container" id="messageboxlist"></form>
+            <!-- <p> -->
+            <br><br>
+            <div style="float:right">
+                <div class="w3-container w3-cell w3-cell-middle">
+                    <a href="#" class="w3-button fs-light-blue w3-ripple" id="btn-messageboxleft">OK</a>
+                    <a href="#" class="w3-button fs-light-blue w3-ripple" id="btn-messageboxright">Cancel</a>
+                </div>
+            </div><br /><br />
+            <!-- </p> -->
+            <!-- </div> -->
+            <footer class="w3-container fs-steel">
+            </footer>
+        </div>
+    </div>
+
+    <!--Popup for 'Hi there!', 'About'-->
+    <div id="popup01" class="w3-modal">
+        <div class="w3-modal-content w3-card-4">
+            <div class="w3-container fs-light-blue">
+                <span id="close-popup" class="w3-button w3-display-topright w3-xlarge xclose">&times;</span>
+                <h2 id="popupheader"></h2>
+            </div>
+            <div class="w3-container" id="popupmessage">
+                <!--message-->
+            </div>
+            <!--<div class="w3-container" id="devicemessage"></div>-->
+            <div id="logo"></div>
+            <footer class="w3-container fs-light-blue">
+            </footer>
+        </div>
+    </div>
+
+</body>
+
+</html>
