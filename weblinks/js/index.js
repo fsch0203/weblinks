@@ -4,6 +4,7 @@ var _lg;
 var _lastScrollTop = 0;
 var _activemode = 'list'; // list or edit
 var _selectprivate = ''; //home, work or other, as input for select
+// var _selectrating = 'star';
 var _selectcat = '';
 var _selecttag = '';
 var _selectdue = '';
@@ -63,9 +64,11 @@ function init() {
             shaarlisecret: "e25379560c99",
             lastsync: '0',
             locale: 'us',
-            private: 'public',
+            private: 'public', //or private
             bmlimit: 1000,
-            listbatch: 100
+            listbatch: 100,
+            setupdated: 'lastused', //set the updated-field to now after weblink is selected or after it is 'edited'
+            listorder: 'stars-updated' //list order: 1.stars, 2.updated or 1.updated ('updated')
         };
         localStorage.setItem('settings', JSON.stringify(_settings));
     }
@@ -81,7 +84,7 @@ function init() {
     }
 }
 
-_settings.locale = detectLanguage(); 
+_settings.locale = detectLanguage();
 // _settings.locale = "us";
 // _locale = 'nl-NL'; // #### to be deleted
 setLanguage(_settings.locale);
@@ -113,8 +116,8 @@ function getstartdata() { //get default data; called if getshaarlidb catches err
 function saveWindowPosition() { //activated after redrawweblinks or hasscrolled
     _settings.screenx = window.screenX; //position is saved after every calculation
     _settings.screeny = window.screenY;
-    _settings.screenw = window.innerWidth;
-    _settings.screenh = window.innerHeight;
+    _settings.screenw = window.outerWidth;
+    _settings.screenh = window.outerHeight;
     localStorage.setItem('settings', JSON.stringify(_settings));
 }
 
@@ -124,6 +127,7 @@ function getChromeWebLinks() {
             processNode(item);
         });
     });
+
     function processNode(node) {
         // recursively process child nodes
         if (node.children) {
@@ -444,6 +448,8 @@ function Select(n) { //n=0 for first batch, n=1 for the rest
     var bmjson = JSON.parse(localStorage.getItem('bmjson'));
     bmdb = TAFFY(bmjson);
     var filter = $("#myFilter").val(); //quick search
+    // var order = (_selectrating === 'star') ? 'rating desc, updated desc' : 'updated desc';
+    var order = (_settings.listorder === 'stars-updated') ? 'rating desc, updated desc' : 'updated desc';
     weblinks = bmdb({
             category: {
                 likenocase: _selectcat
@@ -481,7 +487,7 @@ function Select(n) { //n=0 for first batch, n=1 for the rest
             tags: {
                 likenocase: filter
             }
-        }]).order('rating desc, updated desc').get();
+        }]).order(order).get();
     let bmlength = weblinks.length;
     if (bmlength > _settings.listbatch && n === 0) {
         $('#listend').text(`Show more (in total ${bmlength} links)`);
@@ -584,7 +590,7 @@ function redrawWebLinks(weblinks) { //make list after query (Select())
             size: 300
         })
         $('#qrcode-window').show();
-        $('#qrcode-window').on('click', function(){
+        $('#qrcode-window').on('click', function () {
             $('#qrcode-window').hide();
         });
         $("#activelist tr").removeClass("fs-gray");
@@ -594,6 +600,16 @@ function redrawWebLinks(weblinks) { //make list after query (Select())
         _activeid = $(this).find("span").first().text();
         $("#activelist tr").removeClass("fs-gray");
         $(this).closest("tr").addClass("fs-gray");
+        if (_settings.setupdated === 'lastused') {
+            let updated = date2iso8601(new Date());
+            var bmjson = JSON.parse(localStorage.getItem('bmjson'));
+            objIndex = bmjson.findIndex((obj => obj.id == _activeid));
+            bmjson[objIndex].updated = updated;
+            localStorage.setItem('bmjson', JSON.stringify(bmjson));
+            // $('html, body, #box0').scrollTop(0);
+            $('#box0').scrollTop(0);
+            initSync();
+        }
     });
     $("#activelist tr td:nth-child(3)").on('click', function () { //select weblink to view/edit
         _activeid = $(this).prev().find("span").first().text();
@@ -720,6 +736,19 @@ function alertmessage(text) {
     });
 }
 
+function saveSettings() { //from settings menu
+    if ($('#shaarliurl').val()) _settings.shaarliurl = $('#shaarliurl').val();
+    _settings.shaarliurl = (_settings.shaarliurl.slice(-1) === '/') ? _settings.shaarliurl : _settings.shaarliurl + '/';
+    if ($('#shaarlisecret').val()) _settings.shaarlisecret = $('#shaarlisecret').val();
+    if ($('#ipt-bmlimit').val()) _settings.bmlimit = parseInt($('#ipt-bmlimit').val());
+    if ($('#ipt-listbatch').val()) _settings.listbatch = parseInt($('#ipt-listbatch').val());
+    let sm = $('input[name=syncmethod]:checked').val();
+    _settings.syncmethod = (sm) ? sm : 'shaarli'
+    _settings.private = ($('#set-private').is(':checked')) ? 'private' : 'public';
+    _settings.setupdated = ($('#set-setupdated').is(':checked')) ? 'lastused' : 'edited';
+    localStorage.setItem('settings', JSON.stringify(_settings));
+}
+
 $(document).ready(function () {
     getdata();
     showHtml();
@@ -747,42 +776,7 @@ $(document).ready(function () {
     $("#open-sidebar").on('click', function () {
         w3_open();
     });
-    // $("#verticalbar").hammer().on("swiperight", function (ev) {
-    //     w3_open();
-    // });
-    // $("#mySidebar").hammer().on("swipeleft", function (ev) {
-    //     w3_close();
-    // });
-    $("#privateselect").on('click', function () { //click on private filter
-        $("#getall").removeClass('w3-show');
-        $("#catselectelements").removeClass('w3-show');
-        $("#dueselectelements").removeClass('w3-show');
-        if ($("#privateselectelements").hasClass('w3-show')) { //toggle menu
-            $("#privateselectelements").removeClass('w3-show');
-        } else {
-            $("#privateselectelements").addClass('w3-show');
-        }
-    });
-    $("#catselect").on('click', function () { //click on tag filter
-        $("#getall").removeClass('w3-show');
-        $("#privateselectelements").removeClass('w3-show');
-        $("#dueselectelements").removeClass('w3-show');
-        if ($("#catselectelements").hasClass('w3-show')) { //toggle menu
-            $("#catselectelements").removeClass('w3-show');
-        } else {
-            $("#catselectelements").addClass('w3-show');
-        }
-    });
-    $("#dueselect").on('click', function () { //click on due filter
-        $("#getall").removeClass('w3-show');
-        $("#privateselectelements").removeClass('w3-show');
-        $("#catselectelements").removeClass('w3-show');
-        if ($("#dueselectelements").hasClass('w3-show')) { //toggle menu
-            $("#dueselectelements").removeClass('w3-show');
-        } else {
-            $("#dueselectelements").addClass('w3-show');
-        }
-    });
+    /* Menubar ------------------------------------------------------- */
     $("#getall").click(function () { //select all weblinks
         _selectprivate = '';
         _selectcat = '';
@@ -792,12 +786,53 @@ $(document).ready(function () {
         $("#catselect").text(_lg.catselect).removeClass('bottombar').removeClass('privateprivatemenu');
         $("#dueselect").text(_lg.dueselect).removeClass('bottombar');
         $("#gettagcloud").text(_lg.tagselect).removeClass('bottombar');
-        $("#privateselectelements").removeClass('w3-show');
-        $("#privateselect").text(_lg.privateselect).removeClass('bottombar').removeClass('privateprivatemenu').removeClass('privatepublicmenu');
+        $("#scopeselectelements").removeClass('w3-show');
+        $("#scopeselect").text(_lg.scopeselect).removeClass('bottombar').removeClass('privateprivatemenu').removeClass('privatepublicmenu');
         $("#catselectelements").removeClass('w3-show');
         $("#getall").removeClass('w3-show');
         $("#dueselectelements").removeClass('w3-show');
         Select(0);
+    });
+    $("#ratingselect").click(function () {
+        if (_settings.listorder === 'stars-updated') {
+            _settings.listorder = 'updated';
+            $("#ratingselectimg").attr('src','./res/img/star-open.png');
+        } else {
+            _settings.listorder = 'stars-updated';
+            $("#ratingselectimg").attr('src','./res/img/star-full.png');
+        }
+        Select(0);
+        localStorage.setItem('settings', JSON.stringify(_settings));
+    });
+    $("#scopeselect").on('click', function () { //click on private filter
+        $("#getall").removeClass('w3-show');
+        $("#catselectelements").removeClass('w3-show');
+        $("#dueselectelements").removeClass('w3-show');
+        if ($("#scopeselectelements").hasClass('w3-show')) { //toggle menu
+            $("#scopeselectelements").removeClass('w3-show');
+        } else {
+            $("#scopeselectelements").addClass('w3-show');
+        }
+    });
+    $("#catselect").on('click', function () { //click on tag filter
+        $("#getall").removeClass('w3-show');
+        $("#scopeselectelements").removeClass('w3-show');
+        $("#dueselectelements").removeClass('w3-show');
+        if ($("#catselectelements").hasClass('w3-show')) { //toggle menu
+            $("#catselectelements").removeClass('w3-show');
+        } else {
+            $("#catselectelements").addClass('w3-show');
+        }
+    });
+    $("#dueselect").on('click', function () { //click on due filter
+        $("#getall").removeClass('w3-show');
+        $("#scopeselectelements").removeClass('w3-show');
+        $("#catselectelements").removeClass('w3-show');
+        if ($("#dueselectelements").hasClass('w3-show')) { //toggle menu
+            $("#dueselectelements").removeClass('w3-show');
+        } else {
+            $("#dueselectelements").addClass('w3-show');
+        }
     });
     $("#gettagcloud").on('click', function () {
         w3_close();
@@ -806,21 +841,21 @@ $(document).ready(function () {
     $("#myFilter").keyup(function (event) {
         Select(0);
     });
-    $(".queryprivate").click(function (event) { // Input for query from menu bar
-        var privateselect = event.target.id; //id of selected element  
-        // console.log('privateselect: '+privateselect);
-        $("#privateselectelements").removeClass('w3-show');
-        if (privateselect === 'privateselectall') {
-            $("#privateselect").text(_lg.privateselect).removeClass('bottombar').removeClass('privateprivatemenu').removeClass('privatepublicmenu');
+    $(".queryscope").click(function (event) { // Input for query from menu bar
+        var scopeselect = event.target.id; //id of selected element  
+        // console.log('scopeselect: '+scopeselect);
+        $("#scopeselectelements").removeClass('w3-show');
+        if (scopeselect === 'scopeselectall') {
+            $("#scopeselect").text(_lg.scopeselect).removeClass('bottombar').removeClass('privateprivatemenu').removeClass('privatepublicmenu');
             _selectprivate = '';
         } else {
-            $("#privateselect").text(_selectprivate).addClass('bottombar');
-            if (privateselect === 'privateselectprivate') {
+            $("#scopeselect").text(_selectprivate).addClass('bottombar');
+            if (scopeselect === 'scopeselectprivate') {
                 _selectprivate = 'private';
-                $("#privateselect").text(_lg.privateprivate);
-            } else if (privateselect === 'privateselectpublic') {
+                $("#scopeselect").text(_lg.privateprivate);
+            } else if (scopeselect === 'scopeselectpublic') {
                 _selectprivate = 'public';
-                $("#privateselect").text(_lg.privatepublic);
+                $("#scopeselect").text(_lg.privatepublic);
             }
         }
         Select(0);
@@ -854,6 +889,7 @@ $(document).ready(function () {
         }
         Select(0);
     });
+    /* Edit weblink --------------------------------------------- */
     $("#ratingzero").on('click', function () { //small area left of stars to set zero stars
         $('#ipt-rating').starRating('setRating', 0);
         updateRating(0);
@@ -1073,14 +1109,7 @@ $(document).ready(function () {
             $("#messagebox").hide();
             Select(0);
         } else if (boxtype === 'settings_') { //save settings
-            if ($('#shaarliurl').val()) _settings.shaarliurl = $('#shaarliurl').val();
-            if ($('#shaarlisecret').val()) _settings.shaarlisecret = $('#shaarlisecret').val();
-            if ($('#ipt-bmlimit').val()) _settings.bmlimit = parseInt($('#ipt-bmlimit').val());
-            if ($('#ipt-listbatch').val()) _settings.listbatch = parseInt($('#ipt-listbatch').val());
-            let sm = $('input[name=syncmethod]:checked').val();
-            _settings.syncmethod = (sm) ? sm : 'shaarli'
-            _settings.private = ($('#set-private').is(':checked')) ? 'private' : 'public';
-            localStorage.setItem('settings', JSON.stringify(_settings));
+            saveSettings();
             $("#messagebox").hide();
             initSync();
         }
@@ -1122,7 +1151,8 @@ $(document).ready(function () {
         var boxtype = 'settings_';
         $("#btn-messageboxleft").html(_lg.OK);
         $("#btn-messageboxright").html(_lg.Cancel);
-        let checkedprivate = (_settings.private == 'private');
+        var checkedprivate = (_settings.private === 'private') ? 'checked' : '';
+        var checkedsetupdated = (_settings.setupdated === 'lastused') ? 'checked' : '';
         var list = `<span style="display:none">${boxtype}</span><p></p>`
         if (_run_as != 'ext') {
             list += `<p><label class="label-small">${_lg.lblsyncmethod}</label></p>
@@ -1139,8 +1169,11 @@ $(document).ready(function () {
             <input id="ipt-bmlimit" class="w3-input" type="text" value="${_settings.bmlimit}"></p>
             <p><label class="label-small">${_lg.lblmaxshow}</label>
             <input id="ipt-listbatch" class="w3-input" type="text" value="${_settings.listbatch}"></p>
-            <p><label class="label-small">${_lg.lbldefaultprivate}</label>
-            <input class="w3-check" type="checkbox" checked="${checkedprivate}" id="set-private">`;
+            <p><input class="w3-check" type="checkbox" ${checkedprivate} id="set-private">
+            <label class="label-small">${_lg.lbldefaultprivate}</label>
+            <p><input class="w3-check" type="checkbox" ${checkedsetupdated} id="set-setupdated">
+            <label class="label-small">${_lg.lbldefaultsetupdated}</label>
+            `;
         // '<input id="ipt-listbatch" class="w3-input" type="text" value="' + _settings.listbatch + '"></p>';
         $("#logo").show();
         showmessagebox(hd, msg, list);
@@ -1276,11 +1309,11 @@ function showHtml() {
     $("#cancelweblink").html(_lg.Cancel);
     $("#editweblinks").html(_lg.editweblinks);
     $("#myFilter").attr("placeholder", _lg.Searchfor);
-    $("#getall, #getactionall, #privateselectall, #dueselectall").html(_lg.getall);
+    $("#getall, #getactionall, #scopeselectall, #dueselectall").html(_lg.getall);
     $("#getall").css("font-weight", "Bold");
-    $("#privateselect").html(_lg.privateselect);
-    $("#privateselectprivate").html(_lg.privateprivate);
-    $("#privateselectpublic").html(_lg.privatepublic);
+    $("#scopeselect").html(_lg.scopeselect);
+    $("#scopeselectprivate").html(_lg.privateprivate);
+    $("#scopeselectpublic").html(_lg.privatepublic);
     $(".privateprivatemenu").html(_lg.privateprivate);
     $(".privatepublicmenu").html(_lg.privatepublic);
     $("#dueselect").html(_lg.dueselect);
@@ -1294,4 +1327,6 @@ function showHtml() {
     $("#goremovebox").html(_lg.goremovebox);
     $("#showtrash").html(_lg.showtrash);
     $("#titletagcloud").html(_lg.titletagcloud);
+    let star = (_settings.listorder === 'stars-updated') ? 'full' : 'open';
+    $("#ratingselectimg").attr('src',`./res/img/star-${star}.png`);
 }

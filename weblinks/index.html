@@ -46,7 +46,7 @@
     <script src="js/shaarli.js"></script>
     <script src="js/gdrive.js"></script>
     <script src="js/index.js"></script>
-    
+
 </head>
 
 <body>
@@ -83,12 +83,13 @@
         <!-- black menu bar -->
         <div class="w3-black">
             <div class="menubar w3-black">
+                <a href="#" class="ratingselect" id="ratingselect"><img id="ratingselectimg" src="./res/img/star-full.png" width="24"></a>
                 <a href="#" class="w3-button menubar-item" id="getall">All</a>
-                <a href="#" class="w3-button menubar-item" id="privateselect">Scope</a>
-                <div class="w3-dropdown-content w3-bar-block w3-card-4 privateselectmenu" id="privateselectelements">
-                    <a href="#" class="w3-bar-item w3-button queryprivate" id="privateselectall">All</a>
-                    <a href="#" class="w3-bar-item w3-button queryprivate" id="privateselectprivate">Private</a>
-                    <a href="#" class="w3-bar-item w3-button queryprivate" id="privateselectpublic">Public</a>
+                <a href="#" class="w3-button menubar-item" id="scopeselect">Scope</a>
+                <div class="w3-dropdown-content w3-bar-block w3-card-4 scopeselectmenu" id="scopeselectelements">
+                    <a href="#" class="w3-bar-item w3-button queryscope" id="scopeselectall">All</a>
+                    <a href="#" class="w3-bar-item w3-button queryscope" id="scopeselectprivate">Private</a>
+                    <a href="#" class="w3-bar-item w3-button queryscope" id="scopeselectpublic">Public</a>
                 </div>
                 <a href="#" class="w3-button menubar-item" id="catselect">Category</a>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4 catselectmenu" id="catselectelements">
