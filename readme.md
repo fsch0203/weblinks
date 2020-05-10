@@ -35,6 +35,7 @@ Version 0.1.1 - 2020-05-08
 - Some minor bugs
 - Added extra option to sort weblinks
 - The updated field is set to 'now' after it is used to open weblink
+- Removed the storage permission in the manifest-file
 
 Version 0.1.0 - 2020-05-05
 
