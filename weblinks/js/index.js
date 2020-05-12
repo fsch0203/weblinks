@@ -39,6 +39,7 @@ function getdata() { //first action after gapi-script is loaded
         Select(0);
         console.log('data from local storage');
     } else if (_settings.syncmethod === 'shaarli') {
+        showWelcome();
         getshaarlidb(); //try to get data from server
         console.log('try to get data from shaarli-server');
     } else if (_settings.syncmethod === 'gdrive') {
@@ -47,6 +48,17 @@ function getdata() { //first action after gapi-script is loaded
         getstartdata();
         console.log('startdata');
     }
+}
+
+function showWelcome(){
+    let hd = _lg.welcomehd;
+    // let msg = _lg.welcomemsg
+    let msg = `<p>${_lg.welcomemsg}</p><br>
+        <p><a href='https://weblinks.scriptel.nl' target='_blank'>weblinks.scriptel.nl</a></p>
+        <br><br><hr/>
+        <p class='italic'>${_lg.msg04}</p>
+        <p class='italic'>${_lg.msg05}</p><br>`
+    showMessage(hd, msg);
 }
 
 function init() {

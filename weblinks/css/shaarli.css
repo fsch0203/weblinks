@@ -380,10 +380,12 @@ p {
     background-size: contain;
     width: 70px;
     height: 70px;
-    position: absolute;
+    /* position: absolute; */
     right: 2rem;
     top: 9.7rem;
     display: block;
+    float: right;
+    margin: 15px;
 }
 
 .xclose {
