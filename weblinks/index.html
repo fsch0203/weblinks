@@ -46,8 +46,8 @@
     <script src="js/shaarli.js"></script>
     <script src="js/gdrive.js"></script>
     <script src="js/index.js"></script>
-
 </head>
+<title>WebLinks</title>
 
 <body>
     <!-- Sidebar -->
@@ -70,31 +70,33 @@
     <header>
         <form>
             <span id="clearsearch" onclick="clearsearch()">x</span>
-            <input type="text" name="search" id="myFilter" onsearch="Select()">
+            <input title="Quick search" type="text" name="search" id="myFilter" onsearch="Select()">
         </form>
         <div class="basecolor">
-            <button class="w3-button w3-xlarge xclose" id="open-sidebar"">&#9776;</button>
+            <button title="Menu" class="w3-button w3-xlarge xclose" id="open-sidebar"">&#9776;</button>
             <div class=" w3-container basecolor contheader">
-                <div id="titleapp" class="w3-cell-row title goabout">WebLinks <span id="syncing">
-                        <img class="syncing" src="res/img/syncing.gif" alt="Syncing" height="20" width="20"></span>
+                <div class="w3-cell-row title">
+                    <span title="About weblinks" id="titleapp" class="goabout">WebLinks </span>
+                    <span id="numberofitems"></span>
+                    <span id="syncing"><img class="syncing" src="res/img/syncing.gif" alt="Syncing" height="20" width="20"></span>
                 </div>
-        </div>
+            </div>
         </div>
         <!-- black menu bar -->
         <div class="w3-black">
             <div class="menubar w3-black">
-                <a href="#" class="ratingselect" id="ratingselect"><img id="ratingselectimg" src="./res/img/star-full.png" width="24"></a>
-                <a href="#" class="w3-button menubar-item" id="getall">All</a>
-                <a href="#" class="w3-button menubar-item" id="scopeselect">Scope</a>
+                <a href="#" title="Sort on rating" class="ratingselect" id="ratingselect"><img id="ratingselectimg" src="./res/img/star-full.png" width="24"></a>
+                <a href="#" title="Select all" class="w3-button menubar-item" id="getall">All</a>
+                <a href="#" title="Select scope" class="w3-button menubar-item" id="scopeselect">Scope</a>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4 scopeselectmenu" id="scopeselectelements">
                     <a href="#" class="w3-bar-item w3-button queryscope" id="scopeselectall">All</a>
                     <a href="#" class="w3-bar-item w3-button queryscope" id="scopeselectprivate">Private</a>
                     <a href="#" class="w3-bar-item w3-button queryscope" id="scopeselectpublic">Public</a>
                 </div>
-                <a href="#" class="w3-button menubar-item" id="catselect">Category</a>
+                <a href="#" title="Select category" class="w3-button menubar-item" id="catselect">Category</a>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4 catselectmenu" id="catselectelements">
                 </div>
-                <a href="#" class="w3-button menubar-item" id="dueselect">Due</a>
+                <a href="#" title="Select history" class="w3-button menubar-item" id="dueselect">Due</a>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4 dueselectmenu" id="dueselectelements">
                     <a href="#" class="w3-bar-item w3-button querywhen" id="dueselectall">All</a>
                     <a href="#" class="w3-bar-item w3-button querywhen" id="dueselecttoday">Today</a>
@@ -102,7 +104,7 @@
                     <a href="#" class="w3-bar-item w3-button querywhen" id="dueselectmonth">This month</a>
                     <a href="#" class="w3-bar-item w3-button querywhen" id="dueselectyear">This year</a>
                 </div>
-                <a href="#" class="w3-button menubar-item" id="gettagcloud">Tags</a>
+                <a href="#" title="Show tagcloud" class="w3-button menubar-item" id="gettagcloud">Tags</a>
             </div>
         </div>
     </header>
@@ -118,8 +120,8 @@
                     <a href="#" id="listend">Show more</a>
                 </div>
             </div>
-            <a href="#" class="scrollToTop w3-display-bottomright"></a>
-            <a href="#" id="addnewweblink" class="w3-display-bottomleft"></a>
+            <a href="#" title="Go to top" class="scrollToTop w3-display-bottomright"></a>
+            <a href="#" title="Make new weblink" id="addnewweblink" class="w3-display-bottomleft"></a>
         </div>
     </div>
     <!-- <canvas id="qr"></canvas> -->
@@ -246,7 +248,7 @@
             <div style="float:right">
                 <div class="w3-container w3-cell w3-cell-middle">
                     <a href="#" class="w3-button fs-light-blue w3-ripple" id="btn-messageboxleft">OK</a>
-                    <a href="#" class="w3-button fs-light-blue w3-ripple" id="btn-messageboxright">Cancel</a>
+                    <a href="#" class="w3-button fs-steel w3-ripple" id="btn-messageboxright">Cancel</a>
                 </div>
             </div><br /><br />
             <!-- </p> -->

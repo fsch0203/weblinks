@@ -126,7 +126,7 @@ div.dueinput {
 
 label {
     display: inline-block;
-    cursor: pointer;
+    /* cursor: pointer; */
     /* font-weight: bolder; */
 }
 
@@ -190,15 +190,13 @@ label.lbcheck {
 textarea {
     height: 10em;
 }
-
+/* 
 input[name='getprivate']+label {
-    /* if unchecked */
     color: #ddd;
     background: #aaa;
 }
 
 input[name='setprivate']+label {
-    /* if unchecked */
     color: #ddd;
     background: #aaa;
 }
@@ -215,12 +213,16 @@ input[name='setprivate']:checked+label {
 
 input[name='setaction']:checked+label {
     color: black;
-    /* background: #aaa; */
 }
 
 .lb-setaction {
     position: relative;
     top: -8px;
+}
+ */
+
+.w3-input{
+    font-family: monospace;
 }
 
 p {
@@ -363,19 +365,16 @@ p {
     /* line-height: 1.1; */
     padding-top: 0.5em;
 }
-
+/* 
 #verticalbar {
-    /*to swiperight*/
     height: 100%;
     width: 26px;
     position: fixed;
-    /* Stay in place */
     z-index: 1;
-    /* Sit on top */
     left: 0;
     top: 95px;
 }
-
+ */
 #logo {
     background-image: url("../res/icon/favicon-96x96.png");
     background-size: contain;
@@ -560,16 +559,16 @@ td a {
 }
 
 #addnewweblink {
-    width: 45px;
-    height: 65px;
+    width: 55px;
+    height: 75px;
     padding: 10px;
-    opacity: 80%;
+    opacity: 90%;
     position: absolute;
-    bottom: 2em;
+    bottom: 2.2em;
     display: initial;
     background: url('../res/img/newweblink.png') no-repeat 0px 0px;
     background-size: cover;
-    left: 10%;
+    left: 12%;
 }
 
 .syncing {
@@ -578,6 +577,12 @@ td a {
 
 #syncing {
     display: none;
+    padding-left: 1em;
+}
+
+#numberofitems{
+    font-size: x-small;
+    padding-left: 2em;
 }
 
 #trashicon {

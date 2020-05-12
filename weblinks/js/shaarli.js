@@ -13,10 +13,13 @@ function getshaarlidb() { //get records from shaarli server
             // alert(`${JSON.stringify(json)}`);
             shaarli2bmdb(json);
             // Select(0);
-            _settings.lastsync = new Date().toISOString();
+            let dd = new Date()
+            _settings.lastsync = dd.toISOString();
+            let now = `${dd.getFullYear()}-${dd.getMonth() + 1}-${dd.getDate()} ${dd.getHours()}:${dd.getMinutes()}`
+            // console.log(now)
             localStorage.setItem('settings', JSON.stringify(_settings));
-            console.log(`Get shaarli successful. Last sync: ${_settings.lastsync}`);
-            alertmessage(`Shaarli-synchronization successful. Last sync: ${_settings.lastsync}`);
+            console.log(`Get shaarli successful. Last sync: ${now}`);
+            alertmessage(`Shaarli-synchronization successful (${now})`);
             // alertmessage('Data from Shaarli-server')
             $('#syncing').hide();
         })

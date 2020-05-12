@@ -4,9 +4,13 @@
     "manifest_version": 2,
     "description": "Save, edit and use your Shaarli webLinks (as chrome extension)",
     "icons": {
-        "32": "res/icon/favicon-32x32.png",
-        "48": "/res/icon/android-icon-48x48.png",
-        "144": "/res/icon/android-icon-144x144.png"
+        "16": "icon-16.png",
+        "32": "icon-32.png",
+        "48": "icon-48.png",
+        "64": "icon-64.png",
+        "128": "icon-128.png",
+        "256": "icon-256.png",
+        "512": "icon-512.png"
     },
     "background": {
         "scripts": ["js/background.js"],

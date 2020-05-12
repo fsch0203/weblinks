@@ -95,7 +95,7 @@ function setWindow() {
 }
 
 function initSync() { //after any change: initiate sync with GD
-    console.log('_restartSync in 10 sec');
+    console.log('_restartSync in .. sec');
     let restartSync;
     clearTimeout(restartSync);
     restartSync = setTimeout(function () {
@@ -432,6 +432,8 @@ function showTrash() {
     });
     weblinks = weblinks.sort(fieldSorter(['-rating', '-updated']));
     redrawWebLinks(weblinks);
+    $('#listend').text('');
+    $('#numberofitems').text(weblinks.length);
 }
 
 const fieldSorter = (fields) => (a, b) => fields.map(o => { //sorts array of objects
@@ -446,6 +448,7 @@ const fieldSorter = (fields) => (a, b) => fields.map(o => { //sorts array of obj
 
 function Select(n) { //n=0 for first batch, n=1 for the rest
     var bmjson = JSON.parse(localStorage.getItem('bmjson'));
+    // console.log(`${bmjson.length}`);
     bmdb = TAFFY(bmjson);
     var filter = $("#myFilter").val(); //quick search
     // var order = (_selectrating === 'star') ? 'rating desc, updated desc' : 'updated desc';
@@ -489,22 +492,25 @@ function Select(n) { //n=0 for first batch, n=1 for the rest
             }
         }]).order(order).get();
     let bmlength = weblinks.length;
+    // console.log(`${bmlength}`);
     if (bmlength > _settings.listbatch && n === 0) {
         $('#listend').text(`Show more (in total ${bmlength} links)`);
     } else {
         $('#listend').text('');
     }
     let bmfirst = weblinks.slice(0, _settings.listbatch);
-    bmlength = bmfirst.length;
+    // bmlength = bmfirst.length;
     if (n === 0) {
-        console.log(`(first) ${bmlength} bms ready for redrawWebLinks`);
+        console.log(`(first) ${bmfirst.length} bms ready for redrawWebLinks`);
         _liststart = 0;
+        $('#numberofitems').html(`${bmfirst.length} (of ${bmlength})`);
         redrawWebLinks(bmfirst);
         redrawMenu();
     } else {
         console.log('rest bms');
         _liststart = 1;
         let bmrest = weblinks.slice(_settings.listbatch);
+        $('#numberofitems').html(`${bmlength} (of ${bmlength})`);
         redrawWebLinks(bmrest);
         redrawMenu();
 

@@ -30,6 +30,12 @@ WebLinks can run as a standalone web-application from any webserver or as an chr
 
 ## Versions
 
+Version 0.1.2 - 2020-05-12
+
+- Icons added
+- Number of weblinks visible
+- Minor bugs
+
 Version 0.1.1 - 2020-05-08
 
 - Some minor bugs
